@@ -1,6 +1,7 @@
 import express, { type Express } from "express";
 import cors from "cors";
 import pinoHttp from "pino-http";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import router from "./routes";
 import { logger } from "./lib/logger";
 
@@ -26,6 +27,23 @@ app.use(
   }),
 );
 app.use(cors());
+
+app.use(
+  "/api/openenv",
+  createProxyMiddleware({
+    target: "http://localhost:8000",
+    changeOrigin: true,
+    pathRewrite: { "^/api/openenv": "" },
+    on: {
+      error: (_err, _req, res) => {
+        (res as express.Response).status(502).json({
+          error: "OpenEnv server is not reachable",
+        });
+      },
+    },
+  }) as express.RequestHandler,
+);
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

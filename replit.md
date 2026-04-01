@@ -105,8 +105,18 @@ A complete OpenEnv-compliant data cleaning environment for AI agent training/eva
 - Tests: `pytest tests/` — 18 tests covering all tasks and graders
 - Inference: `inference.py` — baseline script using OpenAI client
 - Deploy: `Dockerfile` + `openenv.yaml` for Hugging Face Spaces
-- Run server: `cd artifacts/openenv-datacleaning && uvicorn openenv_datacleaning.server:app --port 7860`
+- Run server: `cd artifacts/openenv-datacleaning && uvicorn openenv_datacleaning.server:app --port 8000`
 - Run tests: `cd artifacts/openenv-datacleaning && python -m pytest tests/`
+
+### `artifacts/openenv-ui` (`@workspace/openenv-ui`)
+
+React + Vite interactive UI for the OpenEnv data cleaning environment.
+
+- Dark-themed SPA served at preview path `/`
+- Connects to the Python FastAPI server via Express proxy at `/api/openenv/*`
+- Features: task selector (3 tasks with difficulty badges), dataset table with red-highlighted error cells, validation errors panel (row/column/type/message), action builder (bulk_transform, set_value, delete_row, regex_replace, merge_rows, noop), score progress bar, step log, reward flash animation
+- The Express proxy is mounted in `app.ts` BEFORE body-parsing middleware to avoid body-consumption issues with http-proxy-middleware
+- `pnpm --filter @workspace/openenv-ui run dev` — starts Vite dev server
 
 ### `scripts` (`@workspace/scripts`)
 
