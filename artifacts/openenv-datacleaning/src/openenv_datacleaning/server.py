@@ -20,13 +20,18 @@ from pydantic import BaseModel
 from .env import DataCleaningEnv
 from .models import Action, Observation, Reward, StepResult
 
+ROOT_PATH = os.environ.get("ROOT_PATH", "/api/openenv")
+
 app = FastAPI(
     title="DataCleaning OpenEnv",
     description=(
         "A real-world data cleaning and validation environment for AI agents. "
-        "Implements the OpenEnv step()/reset()/state() API."
+        "Implements the OpenEnv step()/reset()/state() API.\n\n"
+        "**3 tasks:** basic_format_fix (easy) → schema_validation (medium) → deduplication_and_merge (hard)\n\n"
+        "**Workflow:** POST /reset → POST /step (repeat) → GET /state"
     ),
     version="1.0.0",
+    root_path=ROOT_PATH,
 )
 
 app.add_middleware(
