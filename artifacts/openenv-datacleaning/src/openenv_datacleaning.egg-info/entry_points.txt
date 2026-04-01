@@ -1,0 +1,2 @@
+[console_scripts]
+openenv-datacleaning = openenv_datacleaning.server:main

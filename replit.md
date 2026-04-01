@@ -21,7 +21,8 @@ pnpm workspace monorepo using TypeScript. Each package manages its own dependenc
 ```text
 artifacts-monorepo/
 ├── artifacts/              # Deployable applications
-│   └── api-server/         # Express API server
+│   ├── api-server/         # Express API server
+│   └── openenv-datacleaning/ # Python OpenEnv environment (data cleaning)
 ├── lib/                    # Shared libraries
 │   ├── api-spec/           # OpenAPI spec + Orval codegen config
 │   ├── api-client-react/   # Generated React Query hooks
@@ -90,6 +91,22 @@ Generated Zod schemas from the OpenAPI spec (e.g. `HealthCheckResponse`). Used b
 ### `lib/api-client-react` (`@workspace/api-client-react`)
 
 Generated React Query hooks and fetch client from the OpenAPI spec (e.g. `useHealthCheck`, `healthCheck`).
+
+### `artifacts/openenv-datacleaning` (Python OpenEnv Environment)
+
+A complete OpenEnv-compliant data cleaning environment for AI agent training/evaluation.
+
+- Python 3.11 package, installed via pip (`pip install -e .`)
+- Entry: `src/openenv_datacleaning/server.py` — FastAPI HTTP server on PORT (default 7860)
+- Core: `env.py` — DataCleaningEnv with `reset()`, `step()`, `state()` API
+- Tasks: `tasks.py` — 3 tasks (easy/medium/hard) with graders scoring 0.0–1.0
+- Validator: `validator.py` — schema-based validation returning typed ValidationError list
+- Actions: `actions.py` — stateless action executor (set_value, delete_row, bulk_transform, regex_replace, merge_rows, noop)
+- Tests: `pytest tests/` — 18 tests covering all tasks and graders
+- Inference: `inference.py` — baseline script using OpenAI client
+- Deploy: `Dockerfile` + `openenv.yaml` for Hugging Face Spaces
+- Run server: `cd artifacts/openenv-datacleaning && uvicorn openenv_datacleaning.server:app --port 7860`
+- Run tests: `cd artifacts/openenv-datacleaning && python -m pytest tests/`
 
 ### `scripts` (`@workspace/scripts`)
 
