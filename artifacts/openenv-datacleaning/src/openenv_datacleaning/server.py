@@ -97,7 +97,7 @@ def state() -> Dict[str, Any]:
 
 def main() -> None:
     import uvicorn
-    port = int(os.environ.get("PORT", 7860))
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run("openenv_datacleaning.server:app", host="0.0.0.0", port=port, reload=False)
 
 

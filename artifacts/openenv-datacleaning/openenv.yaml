@@ -49,5 +49,5 @@ observation_space:
 reward_range: [0.0, 1.0]
 episode_length: 50
 server:
-  port: 7860
+  port: 8000
   framework: fastapi
