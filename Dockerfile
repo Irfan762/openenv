@@ -5,7 +5,7 @@ WORKDIR /app
 # Copy project
 COPY . .
 
-# Upgrade pip and install tools
+# Upgrade pip and install base dependencies
 RUN pip install --no-cache-dir --upgrade pip setuptools wheel
 
 # Install dependencies
@@ -16,12 +16,12 @@ RUN pip install --no-cache-dir \
     openai==1.55.0 \
     requests==2.33.0
 
-# Install the openenv-datacleaning package from local source
-RUN cd /app && pip install --no-cache-dir -e ./artifacts/openenv-datacleaning
+# Install the local package - use standard pip install instead of -e
+RUN cd /app/artifacts/openenv-datacleaning && pip install --no-cache-dir .
 
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 7860
 
-# Run the server
-CMD ["python", "/app/start_server.py"]
+# Run uvicorn directly pointing to the installed package
+CMD ["python", "-m", "uvicorn", "openenv_datacleaning.server:app", "--host", "0.0.0.0", "--port", "7860"]
