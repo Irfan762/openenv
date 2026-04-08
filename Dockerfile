@@ -15,11 +15,26 @@ RUN pip install --no-cache-dir \
     pytest==8.0.0 \
     httpx==0.28.0
 
-# Add src directory to PYTHONPATH
-ENV PYTHONPATH=/app/artifacts/openenv-datacleaning/src
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 7860
 
-# Run server directly
-CMD ["python", "-m", "uvicorn", "openenv_datacleaning.server:app", "--host", "0.0.0.0", "--port", "7860"]
+# Create Python wrapper script that properly handles module loading
+RUN cat > /run_server.py << 'EOF'
+import sys
+import os
+
+# Add the package to path
+sys.path.insert(0, '/app/artifacts/openenv-datacleaning/src')
+os.chdir('/app')
+
+# Import and run uvicorn
+import uvicorn
+from openenv_datacleaning.server import app
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+EOF
+
+# Run the wrapper script
+CMD ["python", "/run_server.py"]
