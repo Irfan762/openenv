@@ -2,6 +2,7 @@ README.md
 pyproject.toml
 src/openenv_datacleaning/__init__.py
 src/openenv_datacleaning/actions.py
+src/openenv_datacleaning/client.py
 src/openenv_datacleaning/env.py
 src/openenv_datacleaning/models.py
 src/openenv_datacleaning/server.py
