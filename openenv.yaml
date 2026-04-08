@@ -1,0 +1,53 @@
+name: data-cleaning-env
+version: "1.0.0"
+description: >
+  A real-world data cleaning and validation environment where an AI agent
+  must detect errors, fix malformed records, handle missing values, and
+  ensure datasets conform to a target schema. Designed to evaluate agents
+  on realistic data engineering tasks faced by data teams daily.
+author: OpenEnv Team
+tags:
+  - openenv
+  - data-cleaning
+  - validation
+  - tabular
+  - real-world
+tasks:
+  - id: basic_format_fix
+    name: Basic Format Correction
+    difficulty: easy
+    description: >
+      Fix a small CSV dataset with simple formatting errors: wrong date formats,
+      uppercase/lowercase inconsistencies, extra whitespace, and numeric strings.
+  - id: schema_validation
+    name: Schema Validation and Repair
+    difficulty: medium
+    description: >
+      Clean a medium-sized employee dataset. Detect schema violations, repair
+      or remove invalid rows, standardize phone numbers and emails, fill in
+      computable missing values, and ensure all columns match their declared types.
+  - id: deduplication_and_merge
+    name: Deduplication and Conflict Resolution
+    difficulty: hard
+    description: >
+      Process a large customer database with duplicate records, conflicting
+      information across duplicates, outlier values, referential integrity issues,
+      and partial matches. Merge duplicates intelligently using field-level
+      confidence scoring and produce a clean, deduplicated master table.
+action_space:
+  type: structured
+  description: >
+    Each action is a JSON object with a "type" field specifying the operation
+    and additional parameters. Available action types vary by task and are
+    documented in the observation's "available_actions" field.
+observation_space:
+  type: structured
+  description: >
+    Observations include the current dataset state (as a list of row dicts),
+    task description, available action types with schemas, validation errors,
+    progress metrics, and step count.
+reward_range: [0.0, 1.0]
+episode_length: 50
+server:
+  port: 8000
+  framework: fastapi
