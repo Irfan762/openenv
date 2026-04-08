@@ -2,10 +2,10 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# Copy entire project structure
+# Copy project
 COPY . .
 
-# Install dependencies explicitly from pyproject.toml
+# Install all dependencies
 RUN pip install --no-cache-dir \
     fastapi==0.115.0 \
     uvicorn[standard]==0.32.0 \
@@ -15,12 +15,12 @@ RUN pip install --no-cache-dir \
     pytest==8.0.0 \
     httpx==0.28.0
 
-# Configure Python path to find the openenv_datacleaning package
-ENV PYTHONPATH=/app/artifacts/openenv-datacleaning/src:${PYTHONPATH}
+# Add src directory to PYTHONPATH
+ENV PYTHONPATH=/app/artifacts/openenv-datacleaning/src
 ENV PYTHONUNBUFFERED=1
-ENV PORT=7860
 
 EXPOSE 7860
 
-# Start server from app root, module is on PYTHONPATH
-CMD ["python", "-m", "uvicorn", "openenv_datacleaning.server:app", "--host", "0.0.0.0", "--port", "7860"]
+# Start the server
+ENTRYPOINT ["python", "-m", "uvicorn"]
+CMD ["openenv_datacleaning.server:app", "--host", "0.0.0.0", "--port", "7860"]
