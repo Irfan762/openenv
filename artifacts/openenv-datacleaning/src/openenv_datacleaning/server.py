@@ -20,7 +20,7 @@ from pydantic import BaseModel
 from .env import DataCleaningEnv
 from .models import Action, Observation, Reward, StepResult
 
-ROOT_PATH = os.environ.get("ROOT_PATH", "/api/openenv")
+ROOT_PATH = os.environ.get("ROOT_PATH", "")
 
 app = FastAPI(
     title="DataCleaning OpenEnv",
@@ -31,7 +31,7 @@ app = FastAPI(
         "**Workflow:** POST /reset → POST /step (repeat) → GET /state"
     ),
     version="1.0.0",
-    root_path=ROOT_PATH,
+    root_path=ROOT_PATH if ROOT_PATH else None,
 )
 
 app.add_middleware(
