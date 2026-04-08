@@ -2,25 +2,30 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gcc \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy the entire project structure
+# Copy entire project
 COPY . .
 
-# Install dependencies from root pyproject.toml if exists, otherwise install packages directly
-RUN if [ -f "artifacts/openenv-datacleaning/pyproject.toml" ]; then \
-    cd artifacts/openenv-datacleaning && pip install --no-cache-dir -e ".[dev]"; \
-    else pip install --no-cache-dir fastapi uvicorn pydantic openai requests; fi
+# Install the openenv-datacleaning package in editable mode
+WORKDIR /app/artifacts/openenv-datacleaning
+RUN pip install --no-cache-dir -e ".[dev]"
 
-# Ensure openenv_datacleaning is in the path
-ENV PYTHONPATH="/app/artifacts/openenv-datacleaning/src:${PYTHONPATH}"
+# Install additional dependencies
+RUN pip install --no-cache-dir openai requests
 
-ENV PORT=7860
+# Set environment variables
 ENV PYTHONUNBUFFERED=1
+ENV PORT=7860
 
+# Work from app root
+WORKDIR /app
+
+# Expose port
 EXPOSE 7860
 
-# Run the server
-CMD ["sh", "-c", "cd /app/artifacts/openenv-datacleaning && python -m uvicorn openenv_datacleaning.server:app --host 0.0.0.0 --port 7860"]
+# Start the server
+CMD ["uvicorn", "openenv_datacleaning.server:app", "--host", "0.0.0.0", "--port", "7860"]
