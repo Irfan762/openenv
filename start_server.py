@@ -7,11 +7,17 @@ Ensures proper module path setup before launching uvicorn
 import sys
 import os
 
-# Ensure proper working directory
-os.chdir('/app')
+# Detect if running in Docker (check for /app path) or locally
+if os.path.exists('/app'):
+    # Running in Docker
+    app_root = '/app'
+    os.chdir(app_root)
+else:
+    # Running locally - use current directory
+    app_root = os.getcwd()
 
 # Add the src directory to Python path
-src_path = '/app/artifacts/openenv-datacleaning/src'
+src_path = os.path.join(app_root, 'artifacts', 'openenv-datacleaning', 'src')
 if src_path not in sys.path:
     sys.path.insert(0, src_path)
 
