@@ -21,6 +21,12 @@ ENV PYTHONUNBUFFERED=1
 
 EXPOSE 7860
 
-# Start the server
-ENTRYPOINT ["python", "-m", "uvicorn"]
-CMD ["openenv_datacleaning.server:app", "--host", "0.0.0.0", "--port", "7860"]
+# Create startup script
+RUN echo '#!/bin/sh\n\
+set -e\n\
+echo "Starting OpenEnv server..."\n\
+cd /app\n\
+python -m uvicorn openenv_datacleaning.server:app --host 0.0.0.0 --port 7860\n\
+' > /start.sh && chmod +x /start.sh
+
+CMD ["/start.sh"]
