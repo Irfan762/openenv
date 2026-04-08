@@ -5,19 +5,20 @@ WORKDIR /app
 # Copy project
 COPY . .
 
-# Install all dependencies
-RUN pip install --no-cache-dir \
+# Install the openenv-datacleaning package with all dependencies
+RUN pip install --no-cache-dir --upgrade pip setuptools wheel && \
+    pip install --no-cache-dir \
     fastapi==0.115.0 \
     uvicorn[standard]==0.32.0 \
     pydantic==2.10.0 \
     openai==1.55.0 \
-    requests==2.33.0 \
-    pytest==8.0.0 \
-    httpx==0.28.0
+    requests==2.33.0
+
+# Install the openenv-datacleaning package from artifacts
+RUN pip install --no-cache-dir -e ./artifacts/openenv-datacleaning
 
 ENV PYTHONUNBUFFERED=1
 
 EXPOSE 7860
 
-# Use the startup script to ensure proper module loading
 CMD ["python", "/app/start_server.py"]
